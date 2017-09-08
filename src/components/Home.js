@@ -8,6 +8,11 @@ class Home extends Component {
 		movies: []
 	}
 
+	onLabelClick = (event, data) => {
+		console.log("event", event)
+		console.log("data", data)
+	}
+
 	componentDidMount(){
 		fetch("http://localhost:3000/api/v1/movies")
 		.then(res => res.json())
@@ -19,7 +24,7 @@ class Home extends Component {
 	render(){
 		return(
 			<div>
-				<Filter/>
+				<Filter onLabelClick={this.onLabelClick}/>
 				<MovieContainer movies={this.state.movies}/>
 			</div>
 		)
