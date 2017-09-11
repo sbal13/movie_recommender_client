@@ -17,6 +17,8 @@ class MovieContainer extends Component {
 	    }
 	}
 
+
+
 	componentDidMount(){
 		document.addEventListener("scroll", this.renderMoreResults)
 	}
@@ -31,7 +33,7 @@ class MovieContainer extends Component {
 				<Grid >
 					<Grid.Row columns={5}>
 						{this.props.movies.slice(0, this.state.numDisplayed).map((movie,index)=> {
-							return <Grid.Column key={index}><MovieCard key={index} movie={movie}/></Grid.Column>
+							return <Grid.Column key={index}><MovieCard key={index} addMovie={this.props.addMovie} movie={movie}/></Grid.Column>
 						})}
 					</Grid.Row>
 				</Grid>

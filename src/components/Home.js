@@ -2,15 +2,19 @@ import React, { Component } from 'react';
 import Filter from './Filter'
 import MovieContainer from './MovieContainer'
 
+
+
 class Home extends Component {
 
 	state = {
-		movies: []
+		movies: [],
+		genreFilter: []
 	}
 
 	onLabelClick = (event, data) => {
-		console.log("event", event)
-		console.log("data", data)
+		this.setState({
+			genreFilter: data.value
+		})
 	}
 
 	componentDidMount(){
@@ -21,11 +25,30 @@ class Home extends Component {
 		}))
 	}
 
+	sortMovies = () =>{
+		let sortedMovies = this.filteredMovies().filter(movie => movie.rating !== "N/A")
+
+		let unratedMovies = this.filteredMovies().filter(movie => movie.rating === "N/A")
+
+		return sortedMovies.sort((movieA, movieB)=>{
+			return movieB.rating - movieA.rating
+		}).concat(unratedMovies)
+	}
+
+	filteredMovies = ()=>{
+		return this.state.movies.filter(movie=> {
+			return !(this.state.genreFilter.map(genre => {
+				 return movie.genre.split("/").includes(genre)
+			}).includes(false))
+		})
+	}
+
 	render(){
+
 		return(
 			<div>
 				<Filter onLabelClick={this.onLabelClick}/>
-				<MovieContainer movies={this.state.movies}/>
+				<MovieContainer addMovie={this.props.addMovie} movies={this.sortMovies().length ? this.sortMovies() : this.state.movies}/>
 			</div>
 		)
 	}

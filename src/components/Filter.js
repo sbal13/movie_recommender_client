@@ -8,7 +8,7 @@ const Filter = ({onLabelClick}) => {
 	let items = Object.entries(GENRES).map(genre => ({key: genre[0], value: genre[0], text: genre[1]}) )
 	return (
 		<div>
-				<Dropdown onChange={onLabelClick} placeholder='Select genres' fluid multiple search selection options={items} />
+				<Dropdown onChange={onLabelClick} closeOnChange={true} placeholder='Select genres' fluid multiple search selection options={items} />
       	</div>
     )
 }
