@@ -8,45 +8,63 @@ import SignupForm from './components/SignupForm'
 import Auth from './adapters/auth'
 import WatchedMovie from './adapters/watchedMovie'
 import ProfilePage from './components/ProfilePage'
+import {Message} from 'semantic-ui-react'
 
 
 class App extends Component {
 
   state = {
-    currentUser: {}
+    currentUser: {},
+    currentUserMovies: [],
+    signupMessage: true
   }
 
   addMovie = (movie) => {
-    WatchedMovie.saveMovie(movie, this.state.currentUser.id)
-    .then(user=> this.setState({currentUser: user}) )
+    WatchedMovie.saveMovie(movie)
+    .then(json=> this.setState({currentUser: json.user, currentUserMovies: json.movies}, alert(json.message)) )
+  }
+
+  removeMovie = (movie) => {
+    WatchedMovie.removeMovie(movie)
+    .then(json=> this.setState({currentUser: json.user, currentUserMovies: json.movies}, alert(json.message)) )
   }
 
   componentDidMount(){
     if (localStorage.getItem('jwt')){
       Auth.getUserInfo()
-        .then(user => this.setState({currentUser: user}) )
+        .then(json => this.setState({currentUser: json.user, currentUserMovies: json.movies }) )
     }
   }
 
   loginUser = (userParams) => {
-    Auth.login(userParams)
+    return Auth.login(userParams)
       .then(user => {
-        localStorage.setItem('jwt', user.jwt)
-        this.setState({
-          currentUser: user
-        })
+        if (user.message){
+          return user
+        } else {
+          localStorage.setItem('jwt', user.jwt)
+          this.setState({
+            currentUser: user
+          })
+        }
+        
         
       })
   }
 
   signupUser = (userParams) => {
-    Auth.signup(userParams)
+    return Auth.signup(userParams)
       .then(user => {
-        localStorage.setItem('jwt', user.jwt)
-        this.setState({
-          currentUser: user
-        })
-        
+
+        if (user.success) {
+          localStorage.setItem('jwt', user.jwt)
+          this.setState({
+            currentUser: user,
+            signupMessage: false
+          })
+        } else {
+          return user
+        }
       })
   }
 
@@ -60,12 +78,19 @@ class App extends Component {
 
   render() {
     return (
+
       <div>
       	<NavBar/>
-        <Route exact path='/' component={() => <Home addMovie={this.addMovie} />}/>
+        <Message
+          success
+          header="Welcome to Movie Recommender!"
+          content="Signup Successful!"
+          hidden={this.state.signupMessage}
+        />
+        <Route exact path='/' render={() => <Home currentUserMovies={this.state.currentUserMovies} addMovie={this.addMovie} />}/>
         <Route exact path='/login' render={() => this.checkLoggedIn(<LoginForm loginUser={this.loginUser}/>)}/>
         <Route exact path='/signup' render={() => this.checkLoggedIn(<SignupForm signupUser={this.signupUser}/>)}/>
-        <Route exact path='/profile' component={ProfilePage}/>
+        <Route exact path='/profile' render={() => <ProfilePage user={this.state.currentUser} movies={this.state.currentUserMovies} removeMovie={this.removeMovie}/>}/>
       </div>
     );
   }

@@ -8,7 +8,8 @@ class Home extends Component {
 
 	state = {
 		movies: [],
-		genreFilter: []
+		genreFilter: [],
+		yearRange: {min: 1920, max: (new Date()).getFullYear()}
 	}
 
 	onLabelClick = (event, data) => {
@@ -36,10 +37,25 @@ class Home extends Component {
 	}
 
 	filteredMovies = ()=>{
-		return this.state.movies.filter(movie=> {
+		let filtersList = this.state.movies.filter(movie=> {
 			return !(this.state.genreFilter.map(genre => {
 				 return movie.genre.split("/").includes(genre)
 			}).includes(false))
+		})
+
+		filtersList = filtersList.filter(movie =>{
+			let releaseYear = movie.release_date.split("-")[0]
+			return releaseYear >= this.state.yearRange.min && releaseYear <= this.state.yearRange.max
+		})
+
+		return filtersList.filter(movie => {
+			return !this.props.currentUserMovies.find(userMovie => userMovie.title === movie.title)
+		})
+	}
+
+	handleYear = (newRange)=>{
+		this.setState({
+			yearRange: newRange
 		})
 	}
 
@@ -47,8 +63,8 @@ class Home extends Component {
 
 		return(
 			<div>
-				<Filter onLabelClick={this.onLabelClick}/>
-				<MovieContainer addMovie={this.props.addMovie} movies={this.sortMovies().length ? this.sortMovies() : this.state.movies}/>
+				<Filter handleYear={this.handleYear} yearRange={this.state.yearRange} onLabelClick={this.onLabelClick}/>
+				<MovieContainer addMovie={this.props.addMovie} movies={this.sortMovies().length ? this.sortMovies() : this.filteredMovies()}/>
 			</div>
 		)
 	}

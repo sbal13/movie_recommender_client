@@ -1,27 +1,27 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
 import Auth from '../adapters/auth'
+import { Menu } from 'semantic-ui-react'
+
 
 
 const NavBar = () => {
 
 	const logLinks = (localStorage.getItem('jwt')) ? 
-	<div>
-		<Link to={`/profile`}>Profile</Link>
-		<Link to="" onClick={Auth.logOut}>Log out</Link>
-	</div> :
-	<div>
-		<Link to={'/signup'}>Sign up</Link>
-		<Link to={'/login'}>Log in</Link>
-	</div>
+
+		[<Menu.Item key={1} href={`/profile`}>Profile</Menu.Item>, 
+		<Menu.Item key={2} position="right" href="" onClick={Auth.logOut}>Log out</Menu.Item>] :
+
+		<Menu.Menu position="right">
+			<Menu.Item href={'/signup'}>Sign up</Menu.Item>
+			<Menu.Item href={'/login'}>Log in</Menu.Item>
+		</Menu.Menu>
 
 	return(
 
-		<div>
-			<Link to={'/'}>Home</Link> 
-			
+		<Menu>
+			<Menu.Item href={'/'}>Home</Menu.Item> 
 			{logLinks}
-		</div>
+		</Menu>
 	)
 }
 

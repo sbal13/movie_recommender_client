@@ -6,13 +6,13 @@ import {Grid} from 'semantic-ui-react'
 class MovieContainer extends Component {
 
 	state = {
-		numDisplayed: 40
+		numDisplayed: 36
 	}
 
 	renderMoreResults = (event)=> {
 	    if (document.body.scrollHeight === document.body.scrollTop + window.innerHeight) {
 	        this.setState({
-	        	numDisplayed: this.state.numDisplayed + 40
+	        	numDisplayed: this.state.numDisplayed + 36
 	        });
 	    }
 	}
@@ -29,11 +29,11 @@ class MovieContainer extends Component {
 	render(){
 
 		return(
-			<div>
+			<div className="movie-container">
 				<Grid >
-					<Grid.Row columns={5}>
+					<Grid.Row columns={6}>
 						{this.props.movies.slice(0, this.state.numDisplayed).map((movie,index)=> {
-							return <Grid.Column key={index}><MovieCard key={index} addMovie={this.props.addMovie} movie={movie}/></Grid.Column>
+							return <Grid.Column key={index}><MovieCard key={index} profilePage={!!this.props.profilePage} removeMovie={this.props.removeMovie} addMovie={this.props.addMovie} movie={movie}/></Grid.Column>
 						})}
 					</Grid.Row>
 				</Grid>

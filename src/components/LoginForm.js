@@ -1,20 +1,26 @@
 import React from 'react';
+import {Form, Button, Grid, Message} from 'semantic-ui-react'
+
 
 class LoginForm extends React.Component{
 
 	state = {
 		username: "",
-		password: ""
+		password: "",
+		error: true
 	}
 
 	handleSubmit = (event)=>{
 		event.preventDefault()
-		this.props.loginUser(this.state)
-
-		this.setState({
-			username: "",
-			password: ""
+		this.props.loginUser(this.state).then( res => {
+			if (res) {
+				this.setState({
+					error: false
+				})
+			}
 		})
+
+		
 	}
 
 	handleChange = (event)=>{
@@ -26,19 +32,33 @@ class LoginForm extends React.Component{
 	render(){
 
 		return(
-			<form onSubmit={this.handleSubmit}>
-				<input type="text" 
-					   value={this.state.usernme} 
-					   placeholder="Username" 
-					   name="username"
-					   onChange={this.handleChange}/>
-				<input type="password" 
-					   value={this.state.password} 
-					   placeholder="Password" 
-					   name="password"
-					   onChange={this.handleChange}/>
-				<input type="submit" value="Submit"/>
-			</form>
+			<div>
+			<Message error 
+					 header='Signin unsuccessful!'
+    				 content="Invalid username or password"
+    				 hidden={this.state.error}/>
+			<Grid centered columns={3} verticalAlign='middle'>
+				<Grid.Column>
+				<Form onSubmit={this.handleSubmit}>
+					<Form.Field>
+						<input type="text" 
+							   value={this.state.usernme} 
+							   placeholder="Username" 
+							   name="username"
+							   onChange={this.handleChange}/>
+					</Form.Field>
+					<Form.Field>
+						<input type="password" 
+							   value={this.state.password} 
+							   placeholder="Password" 
+							   name="password"
+							   onChange={this.handleChange}/>
+					</Form.Field>
+					<Button type="submit">Log in!</Button>
+				</Form>
+				</Grid.Column>
+			</Grid>
+			</div>
 		)
 	}
 }

@@ -1,5 +1,28 @@
 body {
+
   margin: 0;
-  padding: 0;
+  padding-left: 0;
   font-family: sans-serif;
+}
+
+#root{
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.filters{
+	margin-left: 14px;
+	margin-right: 14px;
+}
+
+
+.centered-button {
+	margin: auto;
+	width: 185px;
+	left: 14px;
+	bottom: 0;
+}
+
+.movie-container{
+	margin-left: 15px;
 }

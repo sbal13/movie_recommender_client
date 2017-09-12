@@ -3,19 +3,28 @@ import {Image, Popup, Button} from 'semantic-ui-react'
 import MovieInfo from './MovieInfo'
 
 
-const MovieCard = ({ movie, addMovie}) => {
+const MovieCard = ({profilePage, movie, addMovie, removeMovie}) => {
 
 	const handleClick = (event)=>{
 		event.preventDefault()
 		addMovie(movie.id)
 	}
 
-	let movieImage = <Image src={movie.poster_path ? `http://image.tmdb.org/t/p/w185//${movie.poster_path}` : "http://www.wellesleysocietyofartists.org/wp-content/uploads/2015/11/image-not-found.jpg"} />
+	const handleDelete = (event)=>{
+		event.preventDefault()
+		removeMovie(movie.id)
+	}
+
+	let button = profilePage ? 
+	<Button className="centered-button" onClick={handleDelete} color="red">Remove Movie</Button> :
+	<Button className="centered-button" onClick={handleClick} color="blue">Add Movie</Button>
+
+	let movieImage = <Image shape="rounded" src={movie.poster_path ? `http://image.tmdb.org/t/p/w185//${movie.poster_path}` : "http://www.wellesleysocietyofartists.org/wp-content/uploads/2015/11/image-not-found.jpg"} />
 	if(localStorage.getItem('jwt')){
 		movieImage = (
 			<div>
-				<Image src={movie.poster_path ? `http://image.tmdb.org/t/p/w185//${movie.poster_path}` : "http://www.wellesleysocietyofartists.org/wp-content/uploads/2015/11/image-not-found.jpg"} />
-				<Button onClick={handleClick}>Add Movie</Button>
+				<Image shape="rounded" src={movie.poster_path ? `http://image.tmdb.org/t/p/w185//${movie.poster_path}` : "http://www.wellesleysocietyofartists.org/wp-content/uploads/2015/11/image-not-found.jpg"} />
+				{button}
 			</div>
 		)
 	}
@@ -27,5 +36,7 @@ const MovieCard = ({ movie, addMovie}) => {
 		</div>
 	)
 }
+
+// <Popup trigger={movieImage} content={<MovieInfo movie={movie} />} />
 
 export default MovieCard

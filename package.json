@@ -5,6 +5,7 @@
   "dependencies": {
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "react-input-range": "^1.2.1",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.13",
     "react-search": "^2.0.5",
