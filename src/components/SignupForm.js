@@ -1,5 +1,6 @@
 import React from 'react';
-import {Form, Button, Grid, Message} from 'semantic-ui-react'
+import {Form, Button, Grid} from 'semantic-ui-react'
+import AlertContainer from 'react-alert'
 
 
 class SignupForm extends React.Component{
@@ -9,8 +10,14 @@ class SignupForm extends React.Component{
 		password: "",
 		email: "",
 		passwordConfirmation: "",
-		errorMessages: [],
-		error: true
+	}
+
+	alertOptions = {
+		offset: 0,
+		position: 'top left',
+		theme: 'light',
+		time: 5000,
+		transition: 'fade'
 	}
 
 	handleSubmit = (event)=>{
@@ -18,16 +25,14 @@ class SignupForm extends React.Component{
 		if (this.state.password === this.state.passwordConfirmation){
 			this.props.signupUser(this.state).then(res => {
 				if (res) {
-					this.setState({
-						errorMessages: res,
-						error: false
-					})
-				
+					for (let errorKey in res){
+						this.msg.error(errorKey + " " + res[errorKey][0], {time: 4000})
+					}
 				}
 			})
 			
 		} else {
-			alert("Passwords do not match!")
+			this.msg.error("Passwords do not match!",{time: 4000})
 		}
 	}
 
@@ -39,46 +44,38 @@ class SignupForm extends React.Component{
 
 	render(){
 
-		let errorMessages = []
 
-
-		for (var prop in this.state.errorMessages){
-			errorMessages.push(prop + " " + this.state.errorMessages[prop][0])
-    	}
 
 		return(
 			<div>
-			<Message error
-					header='There was some errors with your submission'
-    				list={errorMessages}
-    				hidden={this.state.error}/>
 
+			<AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
 			<Grid centered columns={3}>
 				<Grid.Column>
 				<Form onSubmit={this.handleSubmit}>
 					<Form.Field>
-						<input type="text" 
+						<input required type="text" 
 							   value={this.state.usernme} 
 							   placeholder="Username" 
 							   name="username"
 							   onChange={this.handleChange}/>
 					</Form.Field>
 					<Form.Field>
-						<input type="email" 
+						<input required type="email" 
 							   value={this.state.email} 
 							   placeholder="Email" 
 							   name="email"
 							   onChange={this.handleChange}/>
 					</Form.Field>
 					<Form.Field>
-						<input type="password" 
+						<input required type="password" 
 							   value={this.state.password} 
 							   placeholder="Password" 
 							   name="password"
 							   onChange={this.handleChange}/>
 					</Form.Field>
 					<Form.Field>
-						<input type="password" 
+						<input required type="password" 
 							   value={this.state.passwordConfirmation} 
 							   placeholder="Password Confirmation" 
 							   name="passwordConfirmation"

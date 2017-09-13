@@ -8,25 +8,40 @@ import SignupForm from './components/SignupForm'
 import Auth from './adapters/auth'
 import WatchedMovie from './adapters/watchedMovie'
 import ProfilePage from './components/ProfilePage'
-import {Message} from 'semantic-ui-react'
+import AlertContainer from 'react-alert'
+
 
 
 class App extends Component {
 
   state = {
     currentUser: {},
-    currentUserMovies: [],
-    signupMessage: true
+    currentUserMovies: []
+  }
+
+  alertOptions = {
+    offset: 0,
+    position: 'top left',
+    theme: 'light',
+    time: 5000,
+    transition: 'fade'
   }
 
   addMovie = (movie) => {
-    WatchedMovie.saveMovie(movie)
-    .then(json=> this.setState({currentUser: json.user, currentUserMovies: json.movies}, alert(json.message)) )
+    console.log(movie)
+    WatchedMovie.saveMovie(movie.id)
+    .then(json=> {
+      this.msg.success(movie.title + " Saved to Your List",{ time: 4000 })
+      this.setState({currentUser: json.user, currentUserMovies: json.movies}) 
+    })
   }
 
   removeMovie = (movie) => {
-    WatchedMovie.removeMovie(movie)
-    .then(json=> this.setState({currentUser: json.user, currentUserMovies: json.movies}, alert(json.message)) )
+    WatchedMovie.removeMovie(movie.id)
+    .then(json=> {
+      this.msg.info(movie.title + " Removed from Your List",{ time: 4000 })
+      this.setState({currentUser: json.user, currentUserMovies: json.movies})
+    })
   }
 
   componentDidMount(){
@@ -38,14 +53,13 @@ class App extends Component {
 
   loginUser = (userParams) => {
     return Auth.login(userParams)
-      .then(user => {
-        if (user.message){
-          return user
+      .then(res => {
+        if (res.message){
+          return res
         } else {
-          localStorage.setItem('jwt', user.jwt)
-          this.setState({
-            currentUser: user
-          })
+          localStorage.setItem('jwt', res.jwt)
+          this.msg.success(`WELCOME BACK ${res.user.username.toUpperCase()}!`,{ time: 4000 })
+          this.setState({currentUser: res.user, currentUserMovies: res.movies})
         }
         
         
@@ -54,16 +68,14 @@ class App extends Component {
 
   signupUser = (userParams) => {
     return Auth.signup(userParams)
-      .then(user => {
+      .then(res => {
 
-        if (user.success) {
-          localStorage.setItem('jwt', user.jwt)
-          this.setState({
-            currentUser: user,
-            signupMessage: false
-          })
+        if (res.success) {
+          localStorage.setItem('jwt', res.jwt)
+          this.msg.success('WELCOME TO FABULA MAGNA!',{ time: 4000 })
+          this.setState({currentUser: res.user})
         } else {
-          return user
+          return res
         }
       })
   }
@@ -80,13 +92,8 @@ class App extends Component {
     return (
 
       <div>
-      	<NavBar/>
-        <Message
-          success
-          header="Welcome to Movie Recommender!"
-          content="Signup Successful!"
-          hidden={this.state.signupMessage}
-        />
+      	<NavBar currentUser={this.state.currentUser}/>
+        <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
         <Route exact path='/' render={() => <Home currentUserMovies={this.state.currentUserMovies} addMovie={this.addMovie} />}/>
         <Route exact path='/login' render={() => this.checkLoggedIn(<LoginForm loginUser={this.loginUser}/>)}/>
         <Route exact path='/signup' render={() => this.checkLoggedIn(<SignupForm signupUser={this.signupUser}/>)}/>

@@ -2,8 +2,6 @@ import React from 'react';
 import { Dropdown, Grid} from 'semantic-ui-react'
 import GENRES from '../genres'
 import InputRange from 'react-input-range';
-import 'react-input-range/lib/css/index.css'
-
 
 const Filter = ({onLabelClick, yearRange, handleYear}) => {
 	let currentYear = (new Date()).getFullYear()

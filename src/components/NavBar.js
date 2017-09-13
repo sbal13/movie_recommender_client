@@ -1,25 +1,29 @@
 import React from 'react'
 import Auth from '../adapters/auth'
 import { Menu } from 'semantic-ui-react'
+import {NavLink} from 'react-router-dom'
 
 
 
-const NavBar = () => {
+
+const NavBar = ({currentUser}) => {
 
 	const logLinks = (localStorage.getItem('jwt')) ? 
 
-		[<Menu.Item key={1} href={`/profile`}>Profile</Menu.Item>, 
-		<Menu.Item key={2} position="right" href="" onClick={Auth.logOut}>Log out</Menu.Item>] :
+		<Menu.Menu position="right">
+			<NavLink className='item nav-item' to='/profile'>{currentUser.username}</NavLink>
+			<NavLink className='item nav-item' activeClassName="" to="/" onClick={Auth.logOut}>Log out</NavLink>
+		</Menu.Menu> :
 
 		<Menu.Menu position="right">
-			<Menu.Item href={'/signup'}>Sign up</Menu.Item>
-			<Menu.Item href={'/login'}>Log in</Menu.Item>
+			<NavLink className='item nav-item' to='/signup'>Sign up</NavLink>
+			<NavLink className='item nav-item' to='/login'>Log in</NavLink>
 		</Menu.Menu>
 
 	return(
 
-		<Menu>
-			<Menu.Item href={'/'}>Home</Menu.Item> 
+		<Menu borderless className="nav-bar-background">
+				<NavLink className="item nav-item-logo" activeClassName="" to='/'>Fabula Magna</NavLink> 
 			{logLinks}
 		</Menu>
 	)

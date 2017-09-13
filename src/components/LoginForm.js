@@ -1,22 +1,29 @@
 import React from 'react';
-import {Form, Button, Grid, Message} from 'semantic-ui-react'
+import {Form, Button, Grid} from 'semantic-ui-react'
+import AlertContainer from 'react-alert'
+
 
 
 class LoginForm extends React.Component{
 
 	state = {
 		username: "",
-		password: "",
-		error: true
+		password: ""
+	}
+
+	alertOptions = {
+		offset: 0,
+		position: 'top left',
+		theme: 'light',
+		time: 5000,
+		transition: 'fade'
 	}
 
 	handleSubmit = (event)=>{
 		event.preventDefault()
 		this.props.loginUser(this.state).then( res => {
 			if (res) {
-				this.setState({
-					error: false
-				})
+				this.msg.error("Invalid username or password!", {time: 4000})
 			}
 		})
 
@@ -33,22 +40,19 @@ class LoginForm extends React.Component{
 
 		return(
 			<div>
-			<Message error 
-					 header='Signin unsuccessful!'
-    				 content="Invalid username or password"
-    				 hidden={this.state.error}/>
+			<AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
 			<Grid centered columns={3} verticalAlign='middle'>
 				<Grid.Column>
 				<Form onSubmit={this.handleSubmit}>
 					<Form.Field>
-						<input type="text" 
+						<input required type="text" 
 							   value={this.state.usernme} 
 							   placeholder="Username" 
 							   name="username"
 							   onChange={this.handleChange}/>
 					</Form.Field>
 					<Form.Field>
-						<input type="password" 
+						<input required type="password" 
 							   value={this.state.password} 
 							   placeholder="Password" 
 							   name="password"
