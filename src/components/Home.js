@@ -19,7 +19,7 @@ class Home extends Component {
 	}
 
 	componentDidMount(){
-		fetch("http://localhost:3000/api/v1/movies")
+		fetch("http://localhost:8080/api/v1/movies")
 		.then(res => res.json())
 		.then(response => this.setState({
 			movies: response.movies
