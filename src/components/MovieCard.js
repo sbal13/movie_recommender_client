@@ -22,7 +22,7 @@ const MovieCard = ({profilePage, movie, addMovie, removeMovie}) => {
 
 	let movieImage =  (
 			<div>
-				<Image className="movie-image" shape="rounded" style={{minHeight: 278}} src={movie.poster_path ? `http://image.tmdb.org/t/p/w185//${movie.poster_path}` : "../export.png"} />
+				<Image className="movie-image" shape="rounded" style={{minHeight: 278}} src={movie.poster_path} />
 				{localStorage.getItem('jwt') ? button : null}
 			</div>
 		)
